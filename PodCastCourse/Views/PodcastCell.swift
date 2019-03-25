@@ -17,12 +17,14 @@ class PodcastCell: UITableViewCell {
     @IBOutlet weak var artistName: UILabel!
     @IBOutlet weak var episodeCount: UILabel!
     
-    var podcast: Podcast!
-    
-    
-    func setUpPodcastCell(with podcast: Podcast){
-        self.trackName.text = podcast.trackName
-        self.artistName.text = podcast.artistName
-        
+    var podcast: Podcast! {
+        didSet {
+            self.trackName.text = podcast.trackName
+            self.artistName.text = podcast.artistName
+            self.episodeCount.text = String(podcast.trackCount ?? -1)
+            
+            }
     }
+    
+    
 }

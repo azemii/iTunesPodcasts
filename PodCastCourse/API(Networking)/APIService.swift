@@ -30,7 +30,6 @@ class APIService {
     /// - parameter completionHandler: Retaining the podcast array that will be returned from the url request.
     ///
     func fetchPodcasts(with searchText: String, completionHandler: @escaping ([Podcast]) -> ()){
-        print("Fetching podcasts.....")
         let podcastParameters = ["term": searchText, "media": "podcast"] // Only searching for podcasts
         
         Alamofire.request(baseItunesSearchURL, method: .get, parameters: podcastParameters, encoding: URLEncoding.default, headers: nil).response { (dataResponse) in
@@ -40,6 +39,11 @@ class APIService {
             }
             // Decoding search results data.
             do {
+                
+                // Only use to see how the json looks.
+//                let jsonResponse = try JSONSerialization.jsonObject(with:
+//                data, options: []) as! [String: Any]
+//                print(jsonResponse)
                 let searchResults = try JSONDecoder().decode(SearchResults.self, from: data)
                 completionHandler(searchResults.results)
             } catch let decodeError {

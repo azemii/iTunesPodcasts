@@ -16,8 +16,8 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     
     let cellID = "cellId"
     var podcasts = [
-        Podcast(trackName: "Let's build that app", artistName: "Ching tong long"),
-        Podcast(trackName: "Dream", artistName: "Steve Jobs")
+        Podcast(trackName: "Let's build that app", artistName: "Ching tong long", trackCount: 10, artworkUrl100: nil ),
+        Podcast(trackName: "Dream", artistName: "Steve Jobs", trackCount: 10, artworkUrl100: nil)
     ]
     
     
