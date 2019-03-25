@@ -53,12 +53,13 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! PodcastCell
         
         let podcast = podcasts[indexPath.row]
-        cell.textLabel?.text = "\(podcast.trackName ?? "")\n\(podcast.artistName ?? "")" // Avoid getting "optional" in text.
-        cell.textLabel?.numberOfLines = -1
-        cell.imageView?.image = #imageLiteral(resourceName: "appicon")
+        cell.podcast = podcast
+//        cell.textLabel?.text = "\(podcast.trackName ?? "")\n\(podcast.artistName ?? "")" // Avoid getting "optional" in text.
+//        cell.textLabel?.numberOfLines = -1
+//        cell.imageView?.image = #imageLiteral(resourceName: "appicon")
         return cell
     }
     
@@ -66,7 +67,15 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     //MARK: - Setup methods.
     fileprivate func setupTableView() { // confined usage to PodcastsSearchController.swift
         // Register cell for tableView.
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
+//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
+        
+        let nib = UINib(nibName: "PodcastCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: cellID)
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 132
     }
     
     fileprivate func setupSearchBar() {
