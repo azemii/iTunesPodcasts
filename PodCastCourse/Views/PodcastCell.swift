@@ -22,9 +22,7 @@ class PodcastCell: UITableViewCell {
             self.trackName.text = podcast.trackName
             self.artistName.text = podcast.artistName
             self.episodeCount.text = String(podcast.trackCount ?? -1)
-            
             }
     }
-    
     
 }
