@@ -7,4 +7,5 @@ target 'PodCastCourse' do
 
   # Pods for PodCastCourse
   pod 'Alamofire'
+  pod 'SDWebImage'
 end
