@@ -31,7 +31,7 @@ class APIService {
     ///
     func fetchPodcasts(with searchText: String, completionHandler: @escaping ([Podcast]) -> ()){
         let podcastParameters = ["term": searchText, "media": "podcast"] // Only searching for podcasts
-        
+
         Alamofire.request(baseItunesSearchURL, method: .get, parameters: podcastParameters, encoding: URLEncoding.default, headers: nil).response { (dataResponse) in
             guard let data = dataResponse.data else {
                 print("Failed to retrive data from urlRequest")
@@ -40,10 +40,11 @@ class APIService {
             // Decoding search results data.
             do {
                 
-                // Only use to see how the json looks.
+                // JSON
 //                let jsonResponse = try JSONSerialization.jsonObject(with:
 //                data, options: []) as! [String: Any]
 //                print(jsonResponse)
+                
                 let searchResults = try JSONDecoder().decode(SearchResults.self, from: data)
                 completionHandler(searchResults.results)
             } catch let decodeError {

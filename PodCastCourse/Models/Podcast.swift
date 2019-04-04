@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Itunes API does not always return these values, set to optinal.
+// Some items may be nil
 struct Podcast: Decodable {
     var trackName: String?
     var artistName: String?

@@ -30,8 +30,12 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     
 
     
-    // MARK: - Search method.
+    // MARK: - Search bar methods.
+    // MARK: Searching and requesting
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if !searchText.isEmpty {
+           
+        }
         APIService.shared.fetchPodcasts(with: searchText) { (podcastsArray) in
             self.podcasts = podcastsArray
             self.tableView.reloadData()
@@ -45,12 +49,19 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         
     }
     
-    //MARK: - TableView Methods
+    // MARK: Cancel button implementation
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.podcasts = []
+        self.tableView.reloadData()
+    }
     
+    
+    
+    //MARK: - TableView Methods
     // MARK: Header
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
-        label.text = ""
+        label.text = "Please enter a search term."
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         label.textColor = UIColor.purple
@@ -59,7 +70,8 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 250
+        // No header when we have podscats, 250 high when empty.
+        return self.podcasts.count > 0 ? 0 : 250
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,18 +85,30 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let episodeController = EpisodesController()
+        episodeController.podcast = podcasts[indexPath.row]
+        navigationController?.pushViewController(episodeController, animated: true)
+    }
+    
   
     
     
     //MARK: - Setup methods.
     fileprivate func setupTableView() { // confined usage to PodcastsSearchController.swift
         // Register cell for tableView.
-//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
+        // tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
         
         // We register the cell using nib insted of the standard way, custom cell class.
         let nib = UINib(nibName: "PodcastCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: cellID)
         tableView.tableFooterView = UIView() // Removes all horizontal lines in table
+        
+        // To be able to see a pushing view ontop of PodcastSearchController we have to
+        // set true. Otherwise our pushing view will not be covering this view, hence not showing.
+        self.definesPresentationContext = true
+        
+        
     }
     
     
@@ -95,5 +119,4 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
     }
-    
 }

@@ -38,8 +38,8 @@ class MainTabBarContoller: UITabBarController {
         
         let navController = UINavigationController(rootViewController: rootviewController)
         navController.navigationBar.prefersLargeTitles = true // Large titles
-        rootviewController.navigationItem.title = title // navController gets the title from the rootviewController
-        navController.tabBarItem.title = title
+        rootviewController.navigationItem.title = title       // navController gets the title from the rootviewController
+        navController.tabBarItem.title = title               
         navController.tabBarItem.image = image
         return navController
     }

@@ -26,7 +26,7 @@ class PodcastCell: UITableViewCell {
             self.episodeCount.text = "\(podcast.trackCount ?? -1 ) Episodes"
             
          
-            guard var imageUrl = URL(string: podcast.artworkUrl600 ?? "") else {
+            guard let imageUrl = URL(string: podcast.artworkUrl600 ?? "") else {
                 return
             }
             // All this code is replace with 1 life using SDWeb.
