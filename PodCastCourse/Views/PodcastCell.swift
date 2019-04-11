@@ -29,7 +29,26 @@ class PodcastCell: UITableViewCell {
             guard let imageUrl = URL(string: podcast.artworkUrl600 ?? "") else {
                 return
             }
-            // All this code is replace with 1 life using SDWeb.
+                podcastImageView.sd_setImage(with: imageUrl, completed: nil)
+            
+        }
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// All this code is replace with 1 life using SDWeb.
 //            URLSession.shared.dataTask(with: imageUrl) { (data, respoonse, error) in
 //                if let data = data {
 //                    DispatchQueue.main.async {
@@ -41,14 +60,7 @@ class PodcastCell: UITableViewCell {
 //                        Adding an image to that imageView will place it ontop of our custom ImageView.
 //                        */
 //                        self.podcastImageView.image = UIImage(data: data)
-//                        print("Finished downloading image with: \(data) bytes...")
+////                        print("Finished downloading image with: \(data) bytes...")
 //                    }
 //                }
 //            }.resume()
-            
-            podcastImageView.sd_setImage(with: imageUrl, completed: nil)
-            
-        }
-    }
-    
-}

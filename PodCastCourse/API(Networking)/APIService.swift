@@ -21,7 +21,7 @@ class APIService {
     let baseItunesSearchURL = "https://itunes.apple.com/search"
     
     
-    //singelton
+    ///Singelton
     static let shared = APIService()
     
     /// Searching for podcasts with a search term.

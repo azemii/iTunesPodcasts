@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Some items may be nil
+// Some items may be nil from the iTunes API JSON.
 struct Podcast: Decodable {
     var trackName: String?
     var artistName: String?

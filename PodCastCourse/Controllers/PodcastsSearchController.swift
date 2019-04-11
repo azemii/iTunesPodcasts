@@ -19,10 +19,11 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     
     
     // Implementing a SearchController
-    let searchController = UISearchController(searchResultsController: nil) // nil = get results on THIS view.
+    // Specify nil if you want to display the search results in the same view controller that displays your searchable content.
+    let searchController = UISearchController(searchResultsController: nil)
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.rowHeight = 132
+//        tableView.rowHeight = 132
         
         setupTableView()
         setupSearchBar()
@@ -91,18 +92,23 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         navigationController?.pushViewController(episodeController, animated: true)
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 132
+    }
+    
   
     
     
     //MARK: - Setup methods.
+    /// Registering xib as resuable cell and setting definesPresentationContext = true
     fileprivate func setupTableView() { // confined usage to PodcastsSearchController.swift
         // Register cell for tableView.
         // tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
         
-        // We register the cell using nib insted of the standard way, custom cell class.
+        // Register the podcast.xib as the resuable cell.
         let nib = UINib(nibName: "PodcastCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: cellID)
-        tableView.tableFooterView = UIView() // Removes all horizontal lines in table
+        tableView.tableFooterView = UIView()
         
         // To be able to see a pushing view ontop of PodcastSearchController we have to
         // set true. Otherwise our pushing view will not be covering this view, hence not showing.
@@ -112,7 +118,7 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     }
     
     
-    
+    /// Customizing the searchController and assigning self to delegate searchController.
     fileprivate func setupSearchBar() {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
