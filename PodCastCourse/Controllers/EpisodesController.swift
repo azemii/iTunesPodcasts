@@ -17,7 +17,7 @@ class EpisodesController: UITableViewController {
     var podcast: Podcast? {
         didSet {
             navigationItem.title = podcast?.trackName
-            fetchEpisodes()
+            fetchEpisodesAndUpdateTableView()
         }
     }
     
@@ -28,16 +28,14 @@ class EpisodesController: UITableViewController {
     }
     
     // MARK: - Fetch
-    fileprivate func fetchEpisodes(){
-//        print("Looking for episodes at feedUrl: ", podcast?.feedUrl ?? "NO_URL -1")
-        
+    fileprivate func fetchEpisodesAndUpdateTableView(){
         guard let feedUrl = podcast?.feedUrl else { return }
-        // If http, replace it with https
-        let secureFeedUrl = feedUrl.contains("https") ?  feedUrl : feedUrl.replacingOccurrences(of: "http", with: "https")
-        guard let url = URL(string: secureFeedUrl) else { return }
-        let parser = FeedParser(URL: url)
-        EpisodeDownloader.fetchEpisodes(with: parser, and: self)
-        
+        APIService.shared.fetchEpisodes(with: feedUrl) { (episodes) in
+            self.episodes = episodes
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     //MARK: - Setup Work
@@ -61,5 +59,19 @@ class EpisodesController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 134
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedEpisode = episodes[indexPath.row]
+        print("Episode Name: ", selectedEpisode.title)
+        
+        let window = UIApplication.shared.keyWindow
+        
+        // Returns all the elements declared inside of the xib file, but we only want
+        // the UIView so we spcifify .first, to return the first element wich is the uiview.
+        let playerView = Bundle.main.loadNibNamed("PlayerDetailsView", owner: self)?.first as! PlayerDetailsView
+        playerView.frame = self.view.frame
+        playerView.episode = selectedEpisode
+        window?.addSubview(playerView)
     }
 }

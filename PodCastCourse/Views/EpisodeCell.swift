@@ -21,8 +21,16 @@ class EpisodeCell: UITableViewCell {
             dateFormatter.dateFormat = "MMM dd, yyyy"
             self.pubDateLabel.text = dateFormatter.string(from: episode.pubDate)
             
-            
+            // Best to convert the string here. If we get a episode URL we will convert
+            // and if we dont have a episode url, we will conver the podcast conver image
+            // url.
             let url = URL(string: episode.episodeImageUrl?.convertToHTTPS() ?? "")
+            SDImageCache.shared().config.maxCacheAge = 3600 * 24 * 7 //1 Week
+            SDImageCache.shared().maxMemoryCost = 1024 * 1024 * 20 //Aprox 20 images
+            SDImageCache.shared().config.shouldCacheImagesInMemory = false //Default True => Store images in RAM cache for Fast performance
+            SDImageCache.shared().config.shouldDecompressImages = false
+            SDWebImageDownloader.shared().shouldDecompressImages = false
+            SDImageCache.shared().config.diskCacheReadingOptions = NSData.ReadingOptions.mappedIfSafe
                 episodeImageView.sd_setImage(with: url)
             
         }

@@ -16,7 +16,6 @@ extension RSSFeedItem {
     /// - Returns: A secure URL containing HTTPS insted of HTTP
     func createSecureURL() -> String? {
         guard let url = self.iTunes?.iTunesImage?.attributes?.href else {
-            //            print("NOT GOING THRU")
             return nil
         }
         let secureUrl = url.convertToHTTPS()

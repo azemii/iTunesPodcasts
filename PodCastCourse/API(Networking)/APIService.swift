@@ -8,21 +8,25 @@
 
 import Foundation
 import Alamofire
+import FeedKit
 
-
-enum EnumParameters {
-    case media(media: String)
+// Decoder will only get the key/value matching the variable name inside of this stuct.
+struct SearchResults: Decodable {
+    let resultCount: Int
+    let results: [Podcast]
 }
 
 
 // All networking code here.
 class APIService {
-    
     let baseItunesSearchURL = "https://itunes.apple.com/search"
     
     
     ///Singelton
     static let shared = APIService()
+    private init(){}
+    
+    
     
     /// Searching for podcasts with a search term.
     ///
@@ -31,21 +35,16 @@ class APIService {
     ///
     func fetchPodcasts(with searchText: String, completionHandler: @escaping ([Podcast]) -> ()){
         let podcastParameters = ["term": searchText, "media": "podcast"] // Only searching for podcasts
-
+        
         Alamofire.request(baseItunesSearchURL, method: .get, parameters: podcastParameters, encoding: URLEncoding.default, headers: nil).response { (dataResponse) in
             guard let data = dataResponse.data else {
                 print("Failed to retrive data from urlRequest")
                 return
             }
-            // Decoding search results data.
+            // Decoding search results data with Decodeable.
             do {
-                
-                // JSON
-//                let jsonResponse = try JSONSerialization.jsonObject(with:
-//                data, options: []) as! [String: Any]
-//                print(jsonResponse)
-                
                 let searchResults = try JSONDecoder().decode(SearchResults.self, from: data)
+                print(searchResults)
                 completionHandler(searchResults.results)
             } catch let decodeError {
                 print("Failed to decode: \(decodeError)")
@@ -56,9 +55,28 @@ class APIService {
     }
     
     
-    // Decoder will only get the key/value matching the variable name inside of this stuct.
-    struct SearchResults: Decodable {
-        let resultCount: Int
-        let results: [Podcast]
+    
+    /// Fetching episodes for the spcified podcast.
+    ///
+    ///- parameter feedURL: Designated url to the RSSFeed.
+    ///- parameter completionHandler:
+    func fetchEpisodes(with feedUrl: String, completionHandler: @escaping ([Episode]) -> Void){
+        let secureUrl = feedUrl.convertToHTTPS()
+        guard let url = URL(string: secureUrl) else { return }
+        let parser = FeedParser(URL: url)
+        parser.parseAsync { (result) in
+            print("succesfully parsed feed: ", result.isSuccess)
+            
+            if let err = result.error {
+                print("error retriving XML feed: ", err)
+                return
+            }
+            guard let feed = result.rssFeed else { return }
+            let episodes = feed.toEpisodes()
+            completionHandler(episodes)
+        }
     }
+    
+    
+
 }

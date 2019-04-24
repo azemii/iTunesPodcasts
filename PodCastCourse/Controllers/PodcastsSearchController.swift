@@ -125,4 +125,18 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
     }
+    
+    
+    func donwloadingJSON(with searchTerm: String) {
+        
+        guard let searchURL = URL(string: "https://itunes.apple.com/search?media=podcast&term=\(searchTerm)") else {return}
+        let data = try! Data(contentsOf: searchURL)
+        
+        let json = try! JSONSerialization.jsonObject(with: data)
+        print(json)
+        
+        
+        
+        
+    }
 }

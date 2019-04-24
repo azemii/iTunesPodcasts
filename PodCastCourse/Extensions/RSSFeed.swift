@@ -10,7 +10,7 @@ import Foundation
 import FeedKit
 
 extension RSSFeed {
-        /// Converts RSSFeed item to and array of episodes
+        /// Converts RSSFeedItem to and array of episodes.
         ///
         /// - Returns: [Episode]
         func toEpisodes() -> [Episode] {
@@ -18,11 +18,10 @@ extension RSSFeed {
         var episodes = [Episode]()
         
         // IF the podcast doesn't have a url for the episodes image, we set
-        // the episode image to the Podcast cover image insted.
+        // the episodeUrl to the podcast cover image URL insted.
         let feedImageUrl = self.iTunes?.iTunesImage?.attributes?.href
         self.items?.forEach({ (feedItem) in
             var episode = Episode(feedItem: feedItem)
-            
             if episode.episodeImageUrl == nil {
                 episode.episodeImageUrl = feedImageUrl  // Use podcast coverimage url insted
             }

@@ -10,8 +10,6 @@ import Foundation
 
 extension String {
     /// Replaces HTTP in a string to HTTPS
-    ///
-    /// 
     func convertToHTTPS() -> String {
         return self.contains("https") ? self : self.replacingOccurrences(of: "http", with: "https")
     }

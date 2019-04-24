@@ -29,7 +29,16 @@ class PodcastCell: UITableViewCell {
             guard let imageUrl = URL(string: podcast.artworkUrl600 ?? "") else {
                 return
             }
-                podcastImageView.sd_setImage(with: imageUrl, completed: nil)
+            SDImageCache.shared().config.maxCacheAge = 3600 * 24 * 7 //1 Week
+            SDImageCache.shared().maxMemoryCost = 1024 * 1024 * 20 //Aprox 20 images
+            SDImageCache.shared().config.shouldCacheImagesInMemory = false //Default True => Store images in RAM cache for Fast performance
+            SDImageCache.shared().config.shouldDecompressImages = false
+            SDWebImageDownloader.shared().shouldDecompressImages = false
+            SDImageCache.shared().config.diskCacheReadingOptions = NSData.ReadingOptions.mappedIfSafe
+            SDWebImageDownloader.shared().maxConcurrentDownloads = 10
+               podcastImageView.sd_setImage(with: imageUrl, completed: nil)
+            
+            
             
         }
     }

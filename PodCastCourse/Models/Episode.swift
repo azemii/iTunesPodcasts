@@ -22,7 +22,7 @@ struct Episode {
     init(feedItem: RSSFeedItem) {
         self.title = feedItem.title ?? "-1"
         self.pubDate = feedItem.pubDate ?? Date()
-        self.description = feedItem.description ?? "-1"
+        self.description = feedItem.iTunes?.iTunesSubtitle ?? feedItem.description ?? "-1"
         self.episodeImageUrl = feedItem.createSecureURL()
     }
     
