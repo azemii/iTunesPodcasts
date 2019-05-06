@@ -19,7 +19,7 @@ extension RSSFeed {
         
         // IF the podcast doesn't have a url for the episodes image, we set
         // the episodeUrl to the podcast cover image URL insted.
-        let feedImageUrl = self.iTunes?.iTunesImage?.attributes?.href
+        let feedImageUrl = self.iTunes?.iTunesImage?.attributes?.href?.convertToHTTPS()
         self.items?.forEach({ (feedItem) in
             var episode = Episode(feedItem: feedItem)
             if episode.episodeImageUrl == nil {

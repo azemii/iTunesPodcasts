@@ -9,8 +9,19 @@
 import Foundation
 
 extension String {
-    /// Replaces HTTP in a string to HTTPS
+
+    /// Replaces HTTP with HTTPS from any string and returns it with the replaced version.
+    ///
+    /// - Returns: A secure URL containing HTTPS insted of HTTP
     func convertToHTTPS() -> String {
-        return self.contains("https") ? self : self.replacingOccurrences(of: "http", with: "https")
+        if self.contains("https"){
+            return self
+        }else if self.contains("http") {
+            let replacedString = self.replacingOccurrences(of: "http", with: "https")
+            return replacedString
+        } else {
+            return self
+        }
+        
     }
 }

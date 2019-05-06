@@ -69,7 +69,7 @@ class APIService {
             
             if let err = result.error {
                 print("error retriving XML feed: ", err)
-                return
+                return 
             }
             guard let feed = result.rssFeed else { return }
             let episodes = feed.toEpisodes()

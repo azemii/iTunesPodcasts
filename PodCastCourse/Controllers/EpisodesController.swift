@@ -73,5 +73,9 @@ class EpisodesController: UITableViewController {
         playerView.frame = self.view.frame
         playerView.episode = selectedEpisode
         window?.addSubview(playerView)
+        
+//        let pv = PodcastPlayerView()
+//        pv.backgroundColor = .black
+//        window?.addSubview(pv)
     }
 }

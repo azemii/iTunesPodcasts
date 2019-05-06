@@ -25,6 +25,7 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         super.viewDidLoad()
 //        tableView.rowHeight = 132
         
+        searchBar(searchController.searchBar, textDidChange: "voong")
         setupTableView()
         setupSearchBar()
     }
@@ -134,9 +135,7 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
         
         let json = try! JSONSerialization.jsonObject(with: data)
         print(json)
-        
-        
-        
+  
         
     }
 }
