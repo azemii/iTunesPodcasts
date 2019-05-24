@@ -44,7 +44,7 @@ class APIService {
             // Decoding search results data with Decodeable.
             do {
                 let searchResults = try JSONDecoder().decode(SearchResults.self, from: data)
-                print(searchResults)
+//                print(searchResults)
                 completionHandler(searchResults.results)
             } catch let decodeError {
                 print("Failed to decode: \(decodeError)")
@@ -63,18 +63,23 @@ class APIService {
     func fetchEpisodes(with feedUrl: String, completionHandler: @escaping ([Episode]) -> Void){
         let secureUrl = feedUrl.convertToHTTPS()
         guard let url = URL(string: secureUrl) else { return }
-        let parser = FeedParser(URL: url)
-        parser.parseAsync { (result) in
-            print("succesfully parsed feed: ", result.isSuccess)
-            
-            if let err = result.error {
-                print("error retriving XML feed: ", err)
-                return 
+        
+        // Networking code, running it on the background thread.
+        DispatchQueue.global(qos: .background).async {
+            let parser = FeedParser(URL: url)
+            parser.parseAsync { (result) in
+                print("succesfully parsed feed: ", result.isSuccess)
+                
+                if let err = result.error {
+                    print("error retriving XML feed: ", err)
+                    return
+                }
+                guard let feed = result.rssFeed else { return }
+                let episodes = feed.toEpisodes()
+                completionHandler(episodes)
             }
-            guard let feed = result.rssFeed else { return }
-            let episodes = feed.toEpisodes()
-            completionHandler(episodes)
         }
+        
     }
     
     

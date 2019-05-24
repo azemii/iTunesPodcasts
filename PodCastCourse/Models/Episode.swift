@@ -29,6 +29,9 @@ struct Episode {
         self.episodeImageUrl = feedItem.iTunes?.iTunesImage?.attributes?.href?.convertToHTTPS() ?? nil
         self.author = feedItem.iTunes?.iTunesAuthor ?? ""
         self.streamUrl = feedItem.enclosure?.attributes?.url?.convertToHTTPS() ?? "" // link for the audiofile.
+        
+//        print("DESCRIPTION: ---\(feedItem.description)")
+//        print("SUBTITLE: ------\(feedItem.iTunes?.iTunesSubtitle)")
     }
     
 }

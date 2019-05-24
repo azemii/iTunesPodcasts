@@ -31,6 +31,7 @@ class EpisodesController: UITableViewController {
     fileprivate func fetchEpisodesAndUpdateTableView(){
         guard let feedUrl = podcast?.feedUrl else { return }
         APIService.shared.fetchEpisodes(with: feedUrl) { (episodes) in
+//            print("FEEEEEEDDDD ------ \(feedUrl)")
             self.episodes = episodes
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -38,14 +39,24 @@ class EpisodesController: UITableViewController {
         }
     }
     
-    //MARK: - Setup Work
+    // MARK: - Setup Work
     fileprivate func setupTableview() {
         let nib = UINib(nibName: "EpisodeCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView() // remove extra lines below cells.
     }
     
-    //MARK: - UITableView
+    // MARK: - UITableView
+    // MARK: Footer		
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {		
+        return setupActivityInidicator()
+    }
+    
+    // Hides the activity indicator if the episodes array is not empty.
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return episodes.isEmpty ? 200 : 0
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return episodes.count
     }
@@ -63,19 +74,52 @@ class EpisodesController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedEpisode = episodes[indexPath.row]
-        print("Episode Name: ", selectedEpisode.title)
+        let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarContoller
+        mainTabBarController?.maximizePlayerDetails(with: selectedEpisode)
+        print("SELECTED EPISODE")
+        print(selectedEpisode.title)
         
-        let window = UIApplication.shared.keyWindow
         
-        // Returns all the elements declared inside of the xib file, but we only want
-        // the UIView so we spcifify .first, to return the first element wich is the uiview.
-        let playerView = Bundle.main.loadNibNamed("PlayerDetailsView", owner: self)?.first as! PlayerDetailsView
-        playerView.frame = self.view.frame
-        playerView.episode = selectedEpisode
-        window?.addSubview(playerView)
+//        let window = UIApplication.shared.keyWindow
+//
+//        // Returns all the elements declared inside of the xib file, but we only want
+//        // the UIView so we spcifify .first, to return the first element wich is the uiview.
+//        let playerView = PlayerDetailsView.initFromNib()
+//        playerView.frame = self.view.frame
+//        playerView.episode = selectedEpisode
+//        window?.addSubview(playerView)
+//
+////        let pv = PodcastPlayerView()
+////        pv.backgroundColor = .black
+////        window?.addSubview(pv)
+    }
+    
+    // MARK: - Helper Methods
+    
+    fileprivate func setupActivityInidicator() -> UIActivityIndicatorView {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.color = .darkGray
+        activityIndicator.startAnimating()
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
         
-//        let pv = PodcastPlayerView()
-//        pv.backgroundColor = .black
-//        window?.addSubview(pv)
+        NSLayoutConstraint.activate([
+            activityIndicator.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            ])
+        
+        let activityLabel = UILabel()
+        activityLabel.text = "Currently Searching..."
+        activityLabel.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.addSubview(activityLabel)
+        activityIndicator.style = .whiteLarge
+        activityIndicator.color = .lightGray
+        
+        NSLayoutConstraint.activate([
+            activityLabel.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor, constant: 20),
+            activityLabel.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor)
+            ])
+        
+        return activityIndicator
     }
 }

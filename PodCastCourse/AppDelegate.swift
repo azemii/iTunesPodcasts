@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Discarding Main.Storyboard.
         window = UIWindow()
         window?.makeKeyAndVisible()
+//        window?.translatesAutoresizingMaskIntoConstraints = false
         window?.rootViewController = MainTabBarContoller()
         return true
     }

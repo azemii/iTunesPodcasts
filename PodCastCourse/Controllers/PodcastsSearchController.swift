@@ -34,21 +34,23 @@ class PodcastsSearchController: UITableViewController, UISearchBarDelegate {
     
     // MARK: - Search bar methods.
     // MARK: Searching and requesting
+    var timer: Timer?
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if !searchText.isEmpty {
-           
-        }
-        APIService.shared.fetchPodcasts(with: searchText) { (podcastsArray) in
-            self.podcasts = podcastsArray
-            self.tableView.reloadData()
-        }
-        
-//         Does the same thing only shorter.
-//        APIService.shared.fetchPodcasts(with: searchText) {
-//            self.podcasts = $0
-//            self.tableView.reloadData()
-//        }
-        
+        timer?.invalidate()
+        // Search after 0.5 seconds, less agressive search method.
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
+            APIService.shared.fetchPodcasts(with: searchText) { (podcastsArray) in
+                self.podcasts = podcastsArray
+                self.tableView.reloadData()
+            }
+            
+            //         Does the same thing only shorter.
+            //        APIService.shared.fetchPodcasts(with: searchText) {
+            //            self.podcasts = $0
+            //            self.tableView.reloadData()
+            //        }
+        })
+
     }
     
     // MARK: Cancel button implementation
