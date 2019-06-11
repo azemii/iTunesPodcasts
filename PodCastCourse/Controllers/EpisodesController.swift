@@ -76,8 +76,8 @@ class EpisodesController: UITableViewController {
         let selectedEpisode = episodes[indexPath.row]
         let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarContoller
         mainTabBarController?.maximizePlayerDetails(with: selectedEpisode)
-        print("SELECTED EPISODE")
-        print(selectedEpisode.title)
+//        print("SELECTED EPISODE")
+//        print(selectedEpisode.title)
         
         
 //        let window = UIApplication.shared.keyWindow

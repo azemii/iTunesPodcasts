@@ -14,8 +14,10 @@ import UIKit
 class MainTabBarContoller: UITabBarController {
     
     let playerDetailsView = PlayerDetailsView.initFromNib()
+    
     var maximizedTopAnchorConstraint: NSLayoutConstraint!
     var minimizedTopAnchorConstraint: NSLayoutConstraint!
+    var bottomAnchorConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         
@@ -45,7 +47,9 @@ class MainTabBarContoller: UITabBarController {
     // MARK: - Animate Methods
     @objc func minimizePlayerDetails() {
         maximizedTopAnchorConstraint.isActive = false
+        bottomAnchorConstraint.constant = view.frame.height
         minimizedTopAnchorConstraint.isActive = true
+        
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 
@@ -59,20 +63,26 @@ class MainTabBarContoller: UITabBarController {
     
     func maximizePlayerDetails(with episode: Episode?) {
         if episode != nil {
-        playerDetailsView.episode = episode
+           playerDetailsView.episode = episode
         }
+        minimizedTopAnchorConstraint.isActive = false
         maximizedTopAnchorConstraint.isActive = true
         maximizedTopAnchorConstraint.constant = 0
-        minimizedTopAnchorConstraint.isActive = false
+        
+        
+        // When max, remove the view.frame.height constant so as the view no longer
+        // streches far down to fix the transparent bug.
+        bottomAnchorConstraint.constant = 0
+        
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             self.view.layoutIfNeeded()
             
-//            self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
+            // We hide the tabbar here.
+            self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
             
             self.playerDetailsView.maximizedStackView.alpha = 1
-            self.playerDetailsView.miniPlayerView.alpha = 0
-            
+            self.playerDetailsView.miniPlayerView.alpha = 0            
         })
     }
     
@@ -93,21 +103,20 @@ class MainTabBarContoller: UITabBarController {
     
     /// Setups a PlayerDetailsView view with autolayout.
     fileprivate func setupPlayerDetailsView() {
-        playerDetailsView.translatesAutoresizingMaskIntoConstraints = false
         view.insertSubview(playerDetailsView, belowSubview: tabBar)
-        
+        playerDetailsView.translatesAutoresizingMaskIntoConstraints = false
+
         // auto layout
-        maximizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
+        maximizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height) // shifting down the entire height of the view, so it's not visible
         minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
+        bottomAnchorConstraint =  playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
         
         NSLayoutConstraint.activate([
             maximizedTopAnchorConstraint,
             playerDetailsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomAnchorConstraint
             ])
-        
-        
+
     }
-    
 }
